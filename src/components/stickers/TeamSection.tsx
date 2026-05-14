@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Sticker, StickerStatus, UserCollection } from '@/types'
 import StickerCard from './StickerCard'
 import { useCollection } from '@/contexts/CollectionContext'
+import { getTeamFlag } from '@/utils/teamFlags'
 
 interface Props {
   teamCode: string
@@ -34,7 +35,7 @@ export default function TeamSection({ teamCode, teamName, stickers, collection, 
         className="w-full flex items-center justify-between px-4 py-3 bg-brand-card hover:bg-brand-surface transition-colors"
       >
         <div className="flex items-center gap-3 min-w-0">
-          <span className="text-xs font-mono text-brand-muted shrink-0">{teamCode}</span>
+          <span className="text-lg leading-none shrink-0" aria-hidden="true">{getTeamFlag(teamCode)}</span>
           <span className="font-semibold text-brand-text truncate">{teamName}</span>
           {dupCount > 0 && (
             <span className="text-xs bg-brand-duplicate/20 text-brand-duplicate px-1.5 py-0.5 rounded-full shrink-0">
@@ -71,7 +72,7 @@ export default function TeamSection({ teamCode, teamName, stickers, collection, 
       {/* Sticker grid */}
       {open && (
         <div className="px-3 py-4 bg-brand-surface">
-          <div className="flex flex-wrap gap-2 justify-start">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
             {stickers.map((s) => {
               const status = (collection.stickers[s.id] ?? 'missing') as StickerStatus
               const qty = collection.quantities[s.id]

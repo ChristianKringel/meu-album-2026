@@ -71,7 +71,7 @@ export default function StickerGrid({ collection, readonly = false }: Props) {
           <span className="text-xs text-brand-muted">{colaHave}/{COCA_COLA_STICKERS.length}</span>
         </div>
         <div className="px-3 py-4 bg-brand-surface">
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
             {COCA_COLA_STICKERS.map((s) => {
               const status = (collection.stickers[s.id] ?? 'missing') as StickerStatus
               const qty = collection.quantities[s.id]
@@ -160,7 +160,7 @@ function SpecialSection({
           <div className="w-full h-1 rounded-full bg-brand-border mb-3 overflow-hidden">
             <div className="h-full bg-brand-gold rounded-full" style={{ width: `${pct}%` }} />
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
             {stickers.map((s) => {
               const status = (collection.stickers[s.id] ?? 'missing') as StickerStatus
               const qty = collection.quantities[s.id]

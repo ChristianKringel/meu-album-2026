@@ -157,7 +157,7 @@ SUI5 Ricardo Rodriguez - Switzerland
 SUI6 Nico Elvedi - Switzerland
 SUI7 Aurèle Amenda - Switzerland
 SUI8 Silvan Widmer - Switzerland
-SWI9 Granit Xhaka - Switzerland
+SUI9 Granit Xhaka - Switzerland
 SUI10 Denis Zakaria - Switzerland
 SUI11 Remo Freuler - Switzerland
 SUI12 Fabian Rieder - Switzerland
@@ -168,7 +168,7 @@ SUI16 Michel Aebischer - Switzerland
 SUI17 Breel Embolo - Switzerland
 SUI18 Ruben Vargas - Switzerland
 SUI19 Dan Ndoye - Switzerland
-SWI20 Zeki Amdouni - Switzerland
+SUI20 Zeki Amdouni - Switzerland
 BRA1 Team Logo - Brazil FOIL
 BRA2 Alisson - Brazil
 BRA3 Bento - Brazil
@@ -1852,7 +1852,7 @@ SUI5 Ricardo Rodriguez - Switzerland
 SUI6 Nico Elvedi - Switzerland
 SUI7 Aurèle Amenda - Switzerland
 SUI8 Silvan Widmer - Switzerland
-SWI9 Granit Xhaka - Switzerland
+SUI9 Granit Xhaka - Switzerland
 SUI10 Denis Zakaria - Switzerland
 SUI11 Remo Freuler - Switzerland
 SUI12 Fabian Rieder - Switzerland
@@ -1863,7 +1863,7 @@ SUI16 Michel Aebischer - Switzerland
 SUI17 Breel Embolo - Switzerland
 SUI18 Ruben Vargas - Switzerland
 SUI19 Dan Ndoye - Switzerland
-SWI20 Zeki Amdouni - Switzerland
+SUI20 Zeki Amdouni - Switzerland
 TUN1 Team Logo - Tunisia FOIL
 TUN2 Bechir Ben Said - Tunisia
 TUN3 Aymen Dahmen - Tunisia

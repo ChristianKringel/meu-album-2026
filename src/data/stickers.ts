@@ -158,7 +158,7 @@ export const ALL_STICKERS: Sticker[] = [
   { id: 'SUI6', name: 'Nico Elvedi', team: 'Suíça', teamCode: 'SUI', number: 6, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI7', name: 'Aurèle Amenda', team: 'Suíça', teamCode: 'SUI', number: 7, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI8', name: 'Silvan Widmer', team: 'Suíça', teamCode: 'SUI', number: 8, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
-  { id: 'SWI9', name: 'Granit Xhaka', team: 'Suíça', teamCode: 'SWI', number: 9, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
+  { id: 'SUI9', name: 'Granit Xhaka', team: 'Suíça', teamCode: 'SUI', number: 9, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI10', name: 'Denis Zakaria', team: 'Suíça', teamCode: 'SUI', number: 10, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI11', name: 'Remo Freuler', team: 'Suíça', teamCode: 'SUI', number: 11, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI12', name: 'Fabian Rieder', team: 'Suíça', teamCode: 'SUI', number: 12, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
@@ -169,7 +169,7 @@ export const ALL_STICKERS: Sticker[] = [
   { id: 'SUI17', name: 'Breel Embolo', team: 'Suíça', teamCode: 'SUI', number: 17, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI18', name: 'Ruben Vargas', team: 'Suíça', teamCode: 'SUI', number: 18, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'SUI19', name: 'Dan Ndoye', team: 'Suíça', teamCode: 'SUI', number: 19, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
-  { id: 'SWI20', name: 'Zeki Amdouni', team: 'Suíça', teamCode: 'SWI', number: 20, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
+  { id: 'SUI20', name: 'Zeki Amdouni', team: 'Suíça', teamCode: 'SUI', number: 20, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'BRA1', name: 'Team Logo', team: 'Brasil', teamCode: 'BRA', number: 1, isFoil: true, isCocaCola: false, isTeamLogo: true, isTeamPhoto: false },
   { id: 'BRA2', name: 'Alisson', team: 'Brasil', teamCode: 'BRA', number: 2, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
   { id: 'BRA3', name: 'Bento', team: 'Brasil', teamCode: 'BRA', number: 3, isFoil: false, isCocaCola: false, isTeamLogo: false, isTeamPhoto: false },
@@ -1024,4 +1024,3 @@ export const COCA_COLA_STICKERS = ALL_STICKERS.filter(s => s.isCocaCola)
 export function buildInitialCollection(): Record<string, 'missing'> {
   return Object.fromEntries(ALL_STICKERS.map(s => [s.id, 'missing' as const]))
 }
-

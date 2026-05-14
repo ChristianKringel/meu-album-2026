@@ -30,8 +30,8 @@ export default function StickerCard({
   readonly = false,
 }: Props) {
   const cardBase =
-    'relative flex flex-col items-center justify-between rounded-lg p-1.5 select-none transition-all duration-200'
-  const sizeClass = 'w-14 h-20'
+    'relative flex flex-col items-center justify-between rounded-lg p-1.5 select-none transition-all duration-200 w-full h-24'
+  const sizeClass = ''
 
   let bgClass = 'bg-brand-card'
   let extraClass = ''
@@ -64,7 +64,7 @@ export default function StickerCard({
       >
         {/* Sticker ID */}
         <span
-          className={`text-[9px] font-bold w-full text-center truncate ${
+          className={`text-[10px] font-bold w-full text-center truncate ${
             sticker.isFoil || sticker.isCocaCola ? 'text-black/70' : 'text-brand-muted'
           }`}
         >
@@ -73,7 +73,7 @@ export default function StickerCard({
 
         {/* Name */}
         <span
-          className={`text-[8px] text-center leading-tight px-0.5 line-clamp-3 ${
+          className={`text-[9px] text-center leading-tight px-0.5 line-clamp-3 ${
             sticker.isFoil || sticker.isCocaCola ? 'text-black/80 font-semibold' : 'text-brand-text'
           }`}
         >
@@ -87,7 +87,7 @@ export default function StickerCard({
         {/* Status badge */}
         {!readonly && (
           <span
-            className={`text-[8px] font-bold ${
+            className={`text-[10px] font-bold ${
               sticker.isFoil || sticker.isCocaCola ? 'text-black/70' : STATUS_COLOR[status]
             }`}
           >
