@@ -8,7 +8,7 @@ export default {
         brand: {
           bg: '#0A0A0F',
           surface: '#12121A',
-          card: '#1A1A26',
+          card: '#2D2D4E',
           border: '#2A2A3F',
           gold: '#D4AF37',
           'gold-light': '#F0CC55',
