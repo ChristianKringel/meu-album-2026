@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: #0A0A0F;
+    color: #F5F5F5;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100dvh;
+    overscroll-behavior: none;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* FOIL shimmer animation */
+  .sticker-foil {
+    background: linear-gradient(
+      135deg,
+      #b8960c 0%,
+      #d4af37 20%,
+      #f0cc55 40%,
+      #fffacd 55%,
+      #f0cc55 70%,
+      #d4af37 85%,
+      #b8960c 100%
+    );
+    background-size: 300% 300%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  /* Coca-Cola card theme */
+  .sticker-coca {
+    background: linear-gradient(135deg, #8b0000 0%, #e32636 50%, #ff4444 100%);
+    background-size: 200% 200%;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  /* Sticker status ring colors */
+  .status-have {
+    @apply ring-2 ring-brand-have;
+  }
+  .status-missing {
+    @apply ring-1 ring-brand-border opacity-60;
+  }
+  .status-duplicate {
+    @apply ring-2 ring-brand-duplicate;
+  }
+
+  /* Scrollbar (webkit) */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #12121A;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2A2A3F;
+    border-radius: 2px;
+  }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Safe area bottom padding for mobile */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
