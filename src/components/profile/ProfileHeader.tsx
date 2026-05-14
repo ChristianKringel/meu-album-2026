@@ -103,16 +103,16 @@ export default function ProfileHeader({ profile, collection, isOwn = false }: Pr
       {firebaseUser && !isOwn && (
         <Link
           to={`/troca/${profile.username}`}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand-gold/10 border border-brand-gold/30 text-brand-gold font-semibold text-sm hover:bg-brand-gold/20 transition-colors"
+          className="flex flex-col items-center justify-center w-full py-2.5 rounded-xl bg-brand-gold/10 border border-brand-gold/30 text-brand-gold font-semibold text-sm hover:bg-brand-gold/20 transition-colors"
         >
-          <span>🔄 Ver compatibilidade de troca</span>
+          <span>Ver compatibilidade de troca</span>
           {tradeScore !== null && (
-            <span className="ml-auto bg-brand-gold text-black text-xs font-black px-2 py-0.5 rounded-full">
+            <span className="text-xs font-normal text-brand-gold/70 mt-0.5">
               {tradeScore.mutual > 0
-                ? `${tradeScore.mutual} trocas`
+                ? `${tradeScore.mutual} ${tradeScore.mutual === 1 ? 'troca possível' : 'trocas possíveis'}`
                 : tradeScore.iCanOffer > 0 || tradeScore.theyCanOffer > 0
-                  ? 'ver ofertas'
-                  : 'sem match'}
+                  ? 'há ofertas unilaterais'
+                  : 'nenhuma troca no momento'}
             </span>
           )}
         </Link>
