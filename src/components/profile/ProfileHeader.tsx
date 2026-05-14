@@ -1,6 +1,9 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import type { UserProfile, UserCollection } from '@/types'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCollection } from '@/contexts/CollectionContext'
+import { ALL_STICKERS } from '@/data/stickers'
 import Avatar from '@/components/ui/Avatar'
 
 interface Props {
@@ -11,6 +14,18 @@ interface Props {
 
 export default function ProfileHeader({ profile, collection, isOwn = false }: Props) {
   const { firebaseUser } = useAuth()
+  const { collection: myCollection } = useCollection()
+
+  const tradeScore = useMemo(() => {
+    if (!myCollection || !collection || isOwn || !firebaseUser) return null
+    const iCanOffer = ALL_STICKERS.filter(
+      (s) => myCollection.stickers[s.id] === 'duplicate' && collection.stickers[s.id] === 'missing'
+    ).length
+    const theyCanOffer = ALL_STICKERS.filter(
+      (s) => collection.stickers[s.id] === 'duplicate' && myCollection.stickers[s.id] === 'missing'
+    ).length
+    return { mutual: Math.min(iCanOffer, theyCanOffer), iCanOffer, theyCanOffer }
+  }, [myCollection, collection, isOwn, firebaseUser])
 
   const haveCount = collection
     ? Object.values(collection.stickers).filter((s) => s === 'have' || s === 'duplicate').length
@@ -90,7 +105,16 @@ export default function ProfileHeader({ profile, collection, isOwn = false }: Pr
           to={`/troca/${profile.username}`}
           className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand-gold/10 border border-brand-gold/30 text-brand-gold font-semibold text-sm hover:bg-brand-gold/20 transition-colors"
         >
-          🔄 Ver compatibilidade de troca
+          <span>🔄 Ver compatibilidade de troca</span>
+          {tradeScore !== null && (
+            <span className="ml-auto bg-brand-gold text-black text-xs font-black px-2 py-0.5 rounded-full">
+              {tradeScore.mutual > 0
+                ? `${tradeScore.mutual} trocas`
+                : tradeScore.iCanOffer > 0 || tradeScore.theyCanOffer > 0
+                  ? 'ver ofertas'
+                  : 'sem match'}
+            </span>
+          )}
         </Link>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useUsers } from '@/hooks/useUsers'
 import UserCard from '@/components/feed/UserCard'
@@ -7,6 +8,14 @@ import { Link } from 'react-router-dom'
 export default function Home() {
   const { firebaseUser, profile } = useAuth()
   const { users, loading, search } = useUsers()
+
+  const nearbyUsers = useMemo(() => {
+    if (!profile?.city || !profile?.uid) return []
+    const myCity = profile.city.toLowerCase()
+    return users.filter(
+      (u) => u.uid !== profile.uid && u.city?.toLowerCase() === myCity
+    )
+  }, [users, profile])
 
   // Unauthed landing page
   if (!firebaseUser) {
@@ -54,6 +63,21 @@ export default function Home() {
       {/* Search */}
       <SearchBar onSearch={search} />
 
+      {/* Perto de você */}
+      {!loading && nearbyUsers.length > 0 && (
+        <div className="space-y-2">
+          <h2 className="text-sm font-bold text-brand-text flex items-center gap-1.5">
+            <span>📍</span> Perto de você — {profile?.city}
+          </h2>
+          {nearbyUsers.map((u) => (
+            <UserCard key={u.uid} user={u} />
+          ))}
+          <div className="border-t border-brand-border pt-2">
+            <h2 className="text-sm font-bold text-brand-text">Todos os colecionadores</h2>
+          </div>
+        </div>
+      )}
+
       {/* Feed */}
       <div className="space-y-2">
         {loading ? (
@@ -67,10 +91,7 @@ export default function Home() {
           </div>
         ) : (
           users.map((u) => (
-            <UserCard
-              key={u.uid}
-              user={u}
-            />
+            <UserCard key={u.uid} user={u} />
           ))
         )}
       </div>

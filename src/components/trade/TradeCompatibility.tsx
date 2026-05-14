@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Sticker, UserCollection, UserProfile } from '@/types'
 import { ALL_STICKERS } from '@/data/stickers'
 import type { StickerStatus } from '@/types'
@@ -9,6 +10,7 @@ interface Props {
 }
 
 function computeMatch(mine: UserCollection, theirs: UserCollection) {
+  // trocas mútuas: eu tenho duplicada e eles precisam, e vice-versa
   const iCanOffer = ALL_STICKERS.filter(
     (s) =>
       (mine.stickers[s.id] as StickerStatus) === 'duplicate' &&
@@ -19,7 +21,19 @@ function computeMatch(mine: UserCollection, theirs: UserCollection) {
       (theirs.stickers[s.id] as StickerStatus) === 'duplicate' &&
       (mine.stickers[s.id] as StickerStatus) === 'missing'
   )
-  return { iCanOffer, theyCanOffer }
+  // posso vender/dar: tenho duplicada mas o outro já tem
+  const iCanSell = ALL_STICKERS.filter(
+    (s) =>
+      (mine.stickers[s.id] as StickerStatus) === 'duplicate' &&
+      (theirs.stickers[s.id] as StickerStatus) !== 'missing'
+  )
+  // outro pode vender/dar pra mim: ele tem duplicada mas eu já tenho
+  const theyCanSell = ALL_STICKERS.filter(
+    (s) =>
+      (theirs.stickers[s.id] as StickerStatus) === 'duplicate' &&
+      (mine.stickers[s.id] as StickerStatus) !== 'missing'
+  )
+  return { iCanOffer, theyCanOffer, iCanSell, theyCanSell }
 }
 
 function buildWhatsAppUrl(phone: string, iOffer: Sticker[], theyOffer: Sticker[]): string {
@@ -38,40 +52,66 @@ function buildWhatsAppUrl(phone: string, iOffer: Sticker[], theyOffer: Sticker[]
 }
 
 export default function TradeCompatibility({ myCollection, theirCollection, theirProfile }: Props) {
-  const { iCanOffer, theyCanOffer } = computeMatch(myCollection, theirCollection)
+  const { iCanOffer, theyCanOffer, iCanSell, theyCanSell } = computeMatch(myCollection, theirCollection)
   const score = Math.min(iCanOffer.length, theyCanOffer.length)
+  const firstName = theirProfile.name.split(' ')[0]
+  const [showExtras, setShowExtras] = useState(false)
+
+  // Ofertas unilaterais: eu posso dar mas não recebo nada em troca (ou vice-versa)
+  const iGiveOnly = iCanOffer.length > 0 && theyCanOffer.length === 0
+  const theyGiveOnly = theyCanOffer.length > 0 && iCanOffer.length === 0
 
   return (
     <div className="space-y-4">
       {/* Score summary */}
       <div className="bg-brand-card border border-brand-border rounded-2xl p-4 text-center">
         <div className="text-4xl font-black text-brand-gold mb-1">{score}</div>
-        <div className="text-sm text-brand-muted">trocas possíveis</div>
+        <div className="text-sm text-brand-muted">trocas mútuas possíveis</div>
         <p className="text-xs text-brand-muted mt-2">
-          Você tem {iCanOffer.length} fig. que {theirProfile.name.split(' ')[0]} precisa
+          Você tem {iCanOffer.length} fig. que {firstName} precisa
           &nbsp;·&nbsp;
-          {theirProfile.name.split(' ')[0]} tem {theyCanOffer.length} que você precisa
+          {firstName} tem {theyCanOffer.length} que você precisa
         </p>
       </div>
 
-      {/* Side by side */}
-      <div className="grid grid-cols-2 gap-3">
-        <StickerList
-          title={`Você oferece (${iCanOffer.length})`}
-          stickers={iCanOffer}
-          color="text-brand-have"
-          emptyMsg="Você não tem repetidas que ele precisa"
-        />
-        <StickerList
-          title={`Você recebe (${theyCanOffer.length})`}
-          stickers={theyCanOffer}
-          color="text-brand-duplicate"
-          emptyMsg={`${theirProfile.name.split(' ')[0]} não tem o que você precisa`}
-        />
-      </div>
+      {/* Aviso de oferta unilateral */}
+      {iGiveOnly && (
+        <div className="bg-brand-have/10 border border-brand-have/30 rounded-xl p-3 text-center">
+          <p className="text-xs text-brand-have font-semibold">
+            Você pode dar {iCanOffer.length} fig. a {firstName}, mas ele/ela não tem nada para oferecer em troca.
+            Considere vender ou aguardar {firstName} colecionar mais.
+          </p>
+        </div>
+      )}
+      {theyGiveOnly && (
+        <div className="bg-brand-duplicate/10 border border-brand-duplicate/30 rounded-xl p-3 text-center">
+          <p className="text-xs text-brand-duplicate font-semibold">
+            {firstName} pode te dar {theyCanOffer.length} fig., mas você não tem nada para oferecer em troca.
+            Considere comprar ou aguardar ter mais repetidas.
+          </p>
+        </div>
+      )}
+
+      {/* Side by side — trocas */}
+      {(iCanOffer.length > 0 || theyCanOffer.length > 0) && (
+        <div className="grid grid-cols-2 gap-3">
+          <StickerList
+            title={`Você oferece (${iCanOffer.length})`}
+            stickers={iCanOffer}
+            color="text-brand-have"
+            emptyMsg={`Você não tem repetidas que ${firstName} precisa`}
+          />
+          <StickerList
+            title={`Você recebe (${theyCanOffer.length})`}
+            stickers={theyCanOffer}
+            color="text-brand-duplicate"
+            emptyMsg={`${firstName} não tem o que você precisa`}
+          />
+        </div>
+      )}
 
       {/* WhatsApp CTA */}
-      {score > 0 && theirProfile.whatsapp ? (
+      {(iCanOffer.length > 0 || theyCanOffer.length > 0) && theirProfile.whatsapp ? (
         <a
           href={buildWhatsAppUrl(theirProfile.whatsapp, iCanOffer, theyCanOffer)}
           target="_blank"
@@ -79,11 +119,11 @@ export default function TradeCompatibility({ myCollection, theirCollection, thei
           className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold text-base hover:bg-[#1da851] transition-colors active:scale-[0.98]"
         >
           <WhatsAppIcon />
-          Chamar no WhatsApp para trocar
+          {score > 0 ? 'Chamar no WhatsApp para trocar' : 'Chamar no WhatsApp para negociar'}
         </a>
-      ) : score > 0 ? (
+      ) : (iCanOffer.length > 0 || theyCanOffer.length > 0) ? (
         <div className="text-center py-3 rounded-xl border border-brand-border text-brand-muted text-sm">
-          {theirProfile.name.split(' ')[0]} não cadastrou o WhatsApp
+          {firstName} não cadastrou o WhatsApp
         </div>
       ) : (
         <div className="text-center py-4 rounded-xl bg-brand-card border border-brand-border">
@@ -93,6 +133,61 @@ export default function TradeCompatibility({ myCollection, theirCollection, thei
             <br />
             Volte quando tiver mais repetidas!
           </p>
+        </div>
+      )}
+
+      {/* Extras para vender/dar */}
+      {(iCanSell.length > 0 || theyCanSell.length > 0) && (
+        <div className="rounded-xl border border-brand-border overflow-hidden">
+          <button
+            onClick={() => setShowExtras((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-brand-surface text-sm text-brand-muted hover:text-brand-text transition-colors"
+          >
+            <span className="font-semibold">Repetidas que não se encaixam nesta troca</span>
+            <span>{showExtras ? '▲' : '▼'}</span>
+          </button>
+
+          {showExtras && (
+            <div className="p-3 space-y-3 bg-brand-card">
+              {iCanSell.length > 0 && (
+                <div>
+                  <p className="text-xs text-brand-muted mb-1.5">
+                    Suas repetidas que <strong>{firstName} já tem</strong> — pode vender/dar para outros ({iCanSell.length})
+                  </p>
+                  <div className="flex flex-wrap gap-1 max-h-32 overflow-y-auto">
+                    {iCanSell.map((s) => (
+                      <span
+                        key={s.id}
+                        title={`${s.name} — ${s.team}`}
+                        className="text-[10px] bg-brand-surface border border-brand-border px-1.5 py-0.5 rounded text-brand-muted"
+                      >
+                        {s.id}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {theyCanSell.length > 0 && (
+                <div>
+                  <p className="text-xs text-brand-muted mb-1.5">
+                    Repetidas de <strong>{firstName}</strong> que <strong>você já tem</strong> — ele/ela pode vender/dar para outros ({theyCanSell.length})
+                  </p>
+                  <div className="flex flex-wrap gap-1 max-h-32 overflow-y-auto">
+                    {theyCanSell.map((s) => (
+                      <span
+                        key={s.id}
+                        title={`${s.name} — ${s.team}`}
+                        className="text-[10px] bg-brand-surface border border-brand-border px-1.5 py-0.5 rounded text-brand-muted"
+                      >
+                        {s.id}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
