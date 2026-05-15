@@ -1,6 +1,7 @@
 # Troca 2026
 
 App social mobile-first para colecionadores do álbum Panini FIFA World Cup 2026. Conecta pessoas para trocar figurinhas via WhatsApp.
+Acessível via: https://meu-album-2026-98c04.web.app/
 
 ## Stack
 
