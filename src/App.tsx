@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { CollectionProvider } from '@/contexts/CollectionContext'
 import Home from '@/pages/Home'
@@ -11,20 +11,6 @@ import NavBar from '@/components/layout/NavBar'
 import BottomNav from '@/components/layout/BottomNav'
 import type { ReactNode } from 'react'
 
-function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { firebaseUser, loading } = useAuth()
-  if (loading) return <FullScreenLoader />
-  if (!firebaseUser) return <Navigate to="/login" replace />
-  return <>{children}</>
-}
-
-function SetupGuard({ children }: { children: ReactNode }) {
-  const { firebaseUser, loading } = useAuth()
-  if (loading) return <FullScreenLoader />
-  if (!firebaseUser) return <Navigate to="/login" replace />
-  return <>{children}</>
-}
-
 function FullScreenLoader() {
   return (
     <div className="min-h-dvh bg-brand-bg flex items-center justify-center">
@@ -33,16 +19,26 @@ function FullScreenLoader() {
   )
 }
 
-const SETUP_EXEMPT = ['/setup', '/login']
+// Rotas que exigem login E perfil completo
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { firebaseUser, profile, loading } = useAuth()
+  if (loading) return <FullScreenLoader />
+  if (!firebaseUser) return <Navigate to="/login" replace />
+  if (!profile) return <Navigate to="/setup" replace />
+  return <>{children}</>
+}
+
+// /setup: só para usuários logados sem perfil
+function SetupGuard({ children }: { children: ReactNode }) {
+  const { firebaseUser, profile, loading } = useAuth()
+  if (loading) return <FullScreenLoader />
+  if (!firebaseUser) return <Navigate to="/login" replace />
+  if (profile) return <Navigate to="/" replace />
+  return <>{children}</>
+}
 
 function AppLayout() {
-  const { firebaseUser, profile, loading } = useAuth()
-  const location = useLocation()
-
-  // Usuário logado sem perfil → redireciona para /setup (exceto nas rotas de auth)
-  if (!loading && firebaseUser && !profile && !SETUP_EXEMPT.includes(location.pathname)) {
-    return <Navigate to="/setup" replace />
-  }
+  const { firebaseUser } = useAuth()
 
   return (
     <div className="min-h-dvh bg-brand-bg flex flex-col">

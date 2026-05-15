@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { createUserProfile, isUsernameAvailable, updateUserProfile } from '@/firebase/db'
 
@@ -18,6 +18,7 @@ export default function Setup() {
   const [isPublic, setIsPublic] = useState(profile?.isPublic ?? true)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [done, setDone] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -68,12 +69,14 @@ export default function Setup() {
       }
 
       await refreshProfile()
-      navigate(isEditing ? `/u/${profile?.username ?? username}` : '/')
+      setDone(true)
     } catch (e: unknown) {
       if (e instanceof Error) setError(e.message)
       setLoading(false)
     }
   }
+
+  if (done) return <Navigate to="/" replace />
 
   return (
     <div className="max-w-sm mx-auto px-4 py-8 space-y-6 animate-slide-up">

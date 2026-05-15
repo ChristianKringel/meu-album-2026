@@ -42,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     return onAuthStateChanged(auth, async (user) => {
+      setLoading(true)
       setFirebaseUser(user)
       if (user) {
         await loadProfile(user)
@@ -70,7 +71,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function refreshProfile() {
-    if (firebaseUser) await loadProfile(firebaseUser)
+    if (firebaseUser) {
+      setLoading(true)
+      await loadProfile(firebaseUser)
+      setLoading(false)
+    }
   }
 
   return (
