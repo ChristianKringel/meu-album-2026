@@ -28,12 +28,11 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-// /setup: só para usuários logados sem perfil
-function SetupGuard({ children }: { children: ReactNode }) {
-  const { firebaseUser, profile, loading } = useAuth()
+// /setup: apenas login obrigatório (funciona para criar e editar perfil)
+function LoginRequired({ children }: { children: ReactNode }) {
+  const { firebaseUser, loading } = useAuth()
   if (loading) return <FullScreenLoader />
   if (!firebaseUser) return <Navigate to="/login" replace />
-  if (profile) return <Navigate to="/" replace />
   return <>{children}</>
 }
 
@@ -47,7 +46,7 @@ function AppLayout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/setup" element={<SetupGuard><Setup /></SetupGuard>} />
+          <Route path="/setup" element={<LoginRequired><Setup /></LoginRequired>} />
           <Route
             path="/colecao"
             element={<ProtectedRoute><Collection /></ProtectedRoute>}
